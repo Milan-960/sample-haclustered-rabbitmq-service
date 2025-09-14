@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: rabbitmq-sample # This is a general name, feel free to customize (e.g., rabbitmq-sender, rabbitmq-listener)
+  rabbitmq:
+    addresses: rabbitmq1:5672,rabbitmq2:5672,rabbitmq3:5672 # Crucial for cluster connectivity
+    username: guest
+    password: guest
+    virtualHost: /
