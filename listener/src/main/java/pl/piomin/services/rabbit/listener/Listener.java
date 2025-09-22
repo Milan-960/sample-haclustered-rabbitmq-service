@@ -27,44 +27,18 @@ public class Listener {
         SpringApplication.run(Listener.class, args);
     }
 
-    @RabbitListener(queues = "q.example")
+    @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void onMessage(Order order) {
         if (timestamp == null)
             timestamp = System.currentTimeMillis();
         logger.info((System.currentTimeMillis() - timestamp) + " : " + order.toString());
     }
 
-    // REMOVE OR COMMENT OUT THESE BEANS. Spring Boot will configure them
-    // based on your application.properties/application.yml
-    /*
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.setUsername("guest");
-        connectionFactory.setPassword("guest");
-        // These addresses are likely from a different environment or legacy setup
-        // Rely on spring.rabbitmq.addresses in application.properties/yml instead
-        connectionFactory.setAddresses("192.168.99.100:30000,192.168.99.100:30002,192.168.99.100:30004");
-        connectionFactory.setChannelCacheSize(10);
-        return connectionFactory;
-    }
-
-    @Bean
-    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory()); // This would use the hardcoded one
-        factory.setConcurrentConsumers(10);
-        factory.setMaxConcurrentConsumers(20);
-        return factory;
-    }
-    */
-
     @Bean
     public Queue queue() {
-        return new Queue("q.example");
+        return new Queue("${rabbitmq.queue.name}");
     }
 
-    // --- ADD THIS NEW BEAN METHOD ---
     // This bean explicitly tells Spring AMQP to allow deserialization of classes
     // within the 'pl.piomin.services.rabbit.commons.message' package.
     // This resolves the 'SecurityException: Attempt to deserialize unauthorized class' error.
